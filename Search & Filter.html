@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search & Filter - Blogging Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      padding: 1.5rem;
+    }
+    .sidebar {
+      width: 250px;
+      background: #2c2c2c;
+      color: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    .sidebar h3 {
+      margin-top: 0;
+      color: #fff;
+    }
+    .sidebar input,
+    .sidebar select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    .sidebar button {
+      width: 100%;
+      padding: 10px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    .sidebar button:hover {
+      background-color: #005bb5;
+    }
+    main {
+      flex: 1;
+      padding: 2rem;
+      background: #fff;
+      overflow-y: auto;
+      box-shadow: -1px 0 10px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+    }
+    h2 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .results-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .result-item {
+      background: #fafafa;
+      margin-bottom: 1rem;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .result-item h3 {
+      margin: 0;
+      color: #333;
+    }
+    .result-item p {
+      color: #555;
+    }
+    .result-item button {
+      background-color: #0066cc;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .result-item button:hover {
+      background-color: #005bb5;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Search & Filter - Blogging Platform</h1>
+  </header>
+
+  <div class="container">
+    <div class="sidebar">
+      <h3>Filter Options</h3>
+      <input type="text" id="search-bar" placeholder="Search by keyword..." onkeyup="filterResults()" />
+      <select id="category-filter" onchange="filterResults()">
+        <option value="">Select Category</option>
+        <option value="Technology">Technology</option>
+        <option value="Health">Health</option>
+        <option value="Political">Political</option>
+        <option value="Geopolitical">Geopolitical News</option>
+      </select>
+      <button onclick="applyFilters()">Apply Filters</button>
+    </div>
+    
+    <main>
+      <h2>Results</h2>
+      <ul class="results-list" id="results-list">
+        <!-- Dynamically populated list items -->
+      </ul>
+    </main>
+  </div>
+
+  <script>
+    const data = [
+      { title: 'Tech Trends in 2025', category: 'Technology', description: 'Explore the latest trends in technology for the upcoming years.' },
+      { title: 'Healthy Eating Tips', category: 'Health', description: 'Simple tips for healthy eating and improving your lifestyle.' },
+      { title: 'Political Tensions in Eastern Europe', category: 'Political', description: 'A detailed analysis of the ongoing political tensions in Eastern Europe.' },
+      { title: 'Geopolitical Dynamics in Asia', category: 'Geopolitical', description: 'Understanding the evolving geopolitical landscape in Asia and its global impact.' },
+      { title: 'AI and Its Impact on Society', category: 'Technology', description: 'A deep dive into AI’s impact on society and how we interact with machines.' },
+      { title: 'Election Analysis: The 2025 US Presidential Race', category: 'Political', description: 'A comprehensive analysis of the candidates and key issues in the upcoming US elections.' },
+      { title: 'Middle East Geopolitical Struggles', category: 'Geopolitical', description: 'An overview of the current geopolitical struggles in the Middle East and their global ramifications.' },
+    ];
+
+    function generateResults(filteredData) {
+      const resultsList = document.getElementById('results-list');
+      resultsList.innerHTML = '';
+      filteredData.forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('result-item');
+        listItem.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>
+          <button>Read More</button>
+        `;
+        resultsList.appendChild(listItem);
+      });
+    }
+
+    function filterResults() {
+      const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+      const selectedCategory = document.getElementById('category-filter').value;
+      const filteredData = data.filter(item => {
+        const matchesSearch = item.title.toLowerCase().includes(searchTerm) || item.description.toLowerCase().includes(searchTerm);
+        const matchesCategory = selectedCategory ? item.category === selectedCategory : true;
+        return matchesSearch && matchesCategory;
+      });
+      generateResults(filteredData);
+    }
+
+    // Initialize with all results
+    generateResults(data);
+  </script>
+</body>
+</html>

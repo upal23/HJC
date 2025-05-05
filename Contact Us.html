@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    label {
+      font-weight: 600;
+      margin-top: 10px;
+      display: block;
+    }
+    button {
+      background-color: #0066cc;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    .hidden {
+      display: none;
+    }
+    .confirmation {
+      text-align: center;
+      font-size: 18px;
+      color: green;
+    }
+    .captcha-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .captcha-image {
+      background: #f0f0f0;
+      padding: 10px;
+      font-weight: bold;
+      font-size: 18px;
+      letter-spacing: 2px;
+      border-radius: 6px;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="form-container">
+    <h2>Contact Us</h2>
+    <form id="contactForm">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Your Name" required />
+      
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="Your Email" required />
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+
+      <label for="captcha">CAPTCHA</label>
+      <div class="captcha-box">
+        <div class="captcha-image" id="captcha-question">Loading...</div>
+        <input type="text" id="captcha" name="captcha" placeholder="Answer" required style="width: 40%;"/>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <div class="container hidden" id="confirmation-container">
+    <p class="confirmation">Thank you! Your message has been received. A confirmation email has been sent.</p>
+  </div>
+
+  <script>
+    // Generate a random math CAPTCHA
+    function generateCaptcha() {
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      const operators = ['+', '-', '*'];
+      const operator = operators[Math.floor(Math.random() * operators.length)];
+
+      let question = `${num1} ${operator} ${num2}`;
+      let answer;
+
+      switch (operator) {
+        case '+': answer = num1 + num2; break;
+        case '-': answer = num1 - num2; break;
+        case '*': answer = num1 * num2; break;
+      }
+
+      return { question, answer };
+    }
+
+    const captchaData = generateCaptcha();
+    document.getElementById('captcha-question').innerText = captchaData.question;
+
+    document.getElementById('contactForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const userAnswer = document.getElementById('captcha').value.trim();
+      if (parseInt(userAnswer) !== captchaData.answer) {
+        alert('CAPTCHA verification failed. Please try again.');
+        return;
+      }
+
+      // Simulate sending data
+      console.log("Sending message:", {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        message: document.getElementById('message').value
+      });
+
+      // Show confirmation
+      document.getElementById('form-container').classList.add('hidden');
+      document.getElementById('confirmation-container').classList.remove('hidden');
+
+      // Simulate auto-receipt email
+      alert('A confirmation email has been sent to your email address.');
+    });
+  </script>
+</body>
+</html>

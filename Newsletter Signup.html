@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Newsletter Signup - Blogging Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .signup-box {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      width: 400px;
+    }
+    h2 {
+      margin-top: 0;
+      color: #333;
+      text-align: center;
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    .consent {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .consent input {
+      margin-right: 8px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    .message {
+      margin-top: 1rem;
+      font-size: 14px;
+      text-align: center;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+    .admin-panel {
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-box">
+    <h2>Subscribe to Our Newsletter</h2>
+    <input type="email" id="email" placeholder="Enter your email" />
+    <div class="consent">
+      <input type="checkbox" id="gdpr" />
+      <label for="gdpr">I agree to receive emails and accept the GDPR policy.</label>
+    </div>
+    <button onclick="subscribe()">Subscribe</button>
+    <div id="message" class="message"></div>
+
+    <div class="admin-panel">
+      <h3>Admin View</h3>
+      <p>Total Subscribers: <span id="count">0</span></p>
+      <button onclick="exportEmails()">Export Emails</button>
+      <pre id="exported" style="background:#f4f4f4; padding:10px; margin-top:1rem; display:none;"></pre>
+    </div>
+  </div>
+
+  <script>
+    let subscribers = [];
+
+    function validateEmail(email) {
+      return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+    }
+
+    function subscribe() {
+      const emailInput = document.getElementById("email");
+      const consent = document.getElementById("gdpr").checked;
+      const message = document.getElementById("message");
+      const email = emailInput.value.trim();
+
+      if (!validateEmail(email)) {
+        message.textContent = "Please enter a valid email address.";
+        message.className = "message error";
+        return;
+      }
+
+      if (!consent) {
+        message.textContent = "You must agree to the GDPR policy.";
+        message.className = "message error";
+        return;
+      }
+
+      if (subscribers.includes(email)) {
+        message.textContent = "This email is already subscribed.";
+        message.className = "message error";
+        return;
+      }
+
+      subscribers.push(email);
+      emailInput.value = "";
+      document.getElementById("gdpr").checked = false;
+      message.textContent = "A confirmation email has been sent. Please confirm your subscription.";
+      message.className = "message success";
+      document.getElementById("count").textContent = subscribers.length;
+    }
+
+    function exportEmails() {
+      const exported = document.getElementById("exported");
+      exported.style.display = "block";
+      exported.textContent = subscribers.join("\n") || "No subscribers yet.";
+    }
+  </script>
+</body>
+</html>

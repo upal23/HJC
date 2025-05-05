@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Validation - Blogging Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    input:invalid, textarea:invalid {
+      border-color: red;
+    }
+    label {
+      font-weight: 600;
+      margin-top: 10px;
+      display: block;
+    }
+    button {
+      background-color: #0066cc;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+    .success-message {
+      color: green;
+      font-size: 14px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Form Validation</h2>
+    <form id="validationForm">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Your Name" required />
+      <div class="error-message hidden" id="name-error">Name is required and must contain at least 3 characters.</div>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="Your Email" required />
+      <div class="error-message hidden" id="email-error">Please enter a valid email address.</div>
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+      <div class="error-message hidden" id="message-error">Message is required and must be at least 10 characters long.</div>
+
+      <button type="submit">Submit</button>
+      <div class="success-message hidden" id="success-message">Form successfully submitted! A confirmation email has been sent.</div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('validationForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const messageInput = document.getElementById('message');
+    const nameError = document.getElementById('name-error');
+    const emailError = document.getElementById('email-error');
+    const messageError = document.getElementById('message-error');
+    const successMessage = document.getElementById('success-message');
+
+    // Real-time validation
+    nameInput.addEventListener('input', () => validateName());
+    emailInput.addEventListener('input', () => validateEmail());
+    messageInput.addEventListener('input', () => validateMessage());
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (validateName() && validateEmail() && validateMessage()) {
+        successMessage.classList.remove('hidden');
+        form.reset();
+      } else {
+        successMessage.classList.add('hidden');
+      }
+    });
+
+    function validateName() {
+      if (nameInput.value.trim().length >= 3) {
+        nameError.classList.add('hidden');
+        nameInput.setCustomValidity('');
+        return true;
+      } else {
+        nameError.classList.remove('hidden');
+        nameInput.setCustomValidity('Invalid name');
+        return false;
+      }
+    }
+
+    function validateEmail() {
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (emailPattern.test(emailInput.value)) {
+        emailError.classList.add('hidden');
+        emailInput.setCustomValidity('');
+        return true;
+      } else {
+        emailError.classList.remove('hidden');
+        emailInput.setCustomValidity('Invalid email');
+        return false;
+      }
+    }
+
+    function validateMessage() {
+      if (messageInput.value.trim().length >= 10) {
+        messageError.classList.add('hidden');
+        messageInput.setCustomValidity('');
+        return true;
+      } else {
+        messageError.classList.remove('hidden');
+        messageInput.setCustomValidity('Invalid message');
+        return false;
+      }
+    }
+  </script>
+
+</body>
+</html>

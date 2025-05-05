@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archive View - Blogging Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+    }
+    h2 { color: #333; margin-bottom: 1rem; text-align: center; }
+    .archive-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    select, button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .archive-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .archive-item {
+      background-color: #fafafa;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .archive-item:hover {
+      background-color: #f0f0f0;
+    }
+    .calendar {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+      justify-content: center;
+    }
+    .calendar-day {
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+      background-color: #007bff;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .calendar-day:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Archive View</h2>
+    <div class="archive-controls">
+      <select id="archive-year" onchange="loadArchive()">
+        <option value="">Select Year</option>
+        <!-- Years dynamically added -->
+      </select>
+      <select id="archive-month" onchange="loadArchive()">
+        <option value="">Select Month</option>
+        <!-- Months dynamically added -->
+      </select>
+      <button onclick="exportArchive()">Export Archive</button>
+    </div>
+
+    <ul class="archive-list" id="archive-list">
+      <!-- Archive items will be listed here -->
+    </ul>
+
+    <div class="calendar" id="calendar"></div>
+  </div>
+
+  <script>
+    const archiveData = [
+      { title: 'Tech Trends in 2022', date: '2022-03-12' },
+      { title: 'Political Updates 2021', date: '2021-05-15' },
+      { title: 'Geopolitical News March 2023', date: '2023-03-15' },
+      { title: 'Health in Post-COVID World', date: '2022-08-22' },
+      { title: 'Global Economy Update 2020', date: '2020-12-11' },
+      { title: 'Tech Innovations 2023', date: '2023-05-05' },
+    ];
+
+    function populateYearSelect() {
+      const yearSelect = document.getElementById('archive-year');
+      const years = [...new Set(archiveData.map(item => new Date(item.date).getFullYear()))];
+      years.forEach(year => {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+      });
+    }
+
+    function populateMonthSelect() {
+      const monthSelect = document.getElementById('archive-month');
+      const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      months.forEach((month, index) => {
+        const option = document.createElement('option');
+        option.value = index + 1;
+        option.textContent = month;
+        monthSelect.appendChild(option);
+      });
+    }
+
+    function loadArchive() {
+      const year = document.getElementById('archive-year').value;
+      const month = document.getElementById('archive-month').value;
+      const filteredPosts = archiveData.filter(post => {
+        const postDate = new Date(post.date);
+        const postYear = postDate.getFullYear();
+        const postMonth = postDate.getMonth() + 1;
+        return (year ? postYear === parseInt(year) : true) && (month ? postMonth === parseInt(month) : true);
+      });
+
+      const archiveList = document.getElementById('archive-list');
+      archiveList.innerHTML = '';
+      filteredPosts.forEach(post => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('archive-item');
+        listItem.innerHTML = `<strong>${post.title}</strong><br><span>${new Date(post.date).toDateString()}</span>`;
+        listItem.onclick = () => alert(`Viewing post: ${post.title}`);
+        archiveList.appendChild(listItem);
+      });
+
+      // Update calendar
+      updateCalendar(year, month);
+    }
+
+    function updateCalendar(year, month) {
+      const calendar = document.getElementById('calendar');
+      calendar.innerHTML = ''; // Clear calendar
+      if (!year || !month) return;
+
+      const firstDay = new Date(year, month - 1, 1);
+      const lastDay = new Date(year, month, 0);
+      const totalDays = lastDay.getDate();
+
+      for (let i = 1; i <= totalDays; i++) {
+        const day = new Date(year, month - 1, i);
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('calendar-day');
+        dayDiv.textContent = i;
+        dayDiv.onclick = () => showOnThisDay(day);
+        calendar.appendChild(dayDiv);
+      }
+    }
+
+    function showOnThisDay(date) {
+      const formattedDate = date.toISOString().split('T')[0];
+      const postsOnThisDay = archiveData.filter(post => post.date === formattedDate);
+      const message = postsOnThisDay.length > 0
+        ? `Posts from this day: ${postsOnThisDay.map(post => post.title).join(', ')}`
+        : 'No posts on this day.';
+      alert(message);
+    }
+
+    function exportArchive() {
+      const year = document.getElementById('archive-year').value;
+      const month = document.getElementById('archive-month').value;
+      const filteredPosts = archiveData.filter(post => {
+        const postDate = new Date(post.date);
+        const postYear = postDate.getFullYear();
+        const postMonth = postDate.getMonth() + 1;
+        return (year ? postYear === parseInt(year) : true) && (month ? postMonth === parseInt(month) : true);
+      });
+
+      const data = JSON.stringify(filteredPosts, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'archive.json';
+      link.click();
+    }
+
+    // Initialize page
+    populateYearSelect();
+    populateMonthSelect();
+  </script>
+</body>
+</html>

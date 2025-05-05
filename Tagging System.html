@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tagging System - Blogging Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    h2 { color: #333; margin-bottom: 1rem; }
+    input[type="text"] {
+      width: 100%; padding: 10px; font-size: 16px; border-radius: 8px;
+      margin-bottom: 1rem; border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff;
+      border: none; border-radius: 8px; cursor: pointer;
+    }
+
+    button:hover { background-color: #0056b3; }
+    .tag-cloud { margin-top: 1rem; }
+    .tag-cloud span {
+      display: inline-block; padding: 8px; margin: 5px; background-color: #007bff;
+      color: white; border-radius: 15px; cursor: pointer; transition: background-color 0.3s;
+    }
+    .tag-cloud span:hover { background-color: #0056b3; }
+    .tag-manager {
+      margin-top: 2rem;
+      text-align: left;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .tag-manager .tag-item {
+      padding: 8px; margin: 5px; background-color: #f0f0f0; border-radius: 8px;
+      display: inline-block;
+      transition: background-color 0.3s;
+    }
+    .tag-manager .tag-item:hover { background-color: #e0e0e0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Create a Post with Tags</h2>
+    <input type="text" id="post-tags" placeholder="Enter tags (e.g., #recipes, #health)" />
+    <button onclick="addTags()">Add Tags</button>
+
+    <h3>Tag Cloud</h3>
+    <div class="tag-cloud" id="tag-cloud"></div>
+
+    <h3>Tag Manager (Admin)</h3>
+    <div class="tag-manager" id="tag-manager"></div>
+  </div>
+
+  <script>
+    let tags = [];
+    let allTags = {};
+
+    // Function to add tags to post
+    function addTags() {
+      const input = document.getElementById('post-tags');
+      const newTags = input.value.trim().split(/\s*,\s*/).map(tag => tag.toLowerCase().replace('#', '').trim());
+      input.value = ''; // Clear input
+
+      newTags.forEach(tag => {
+        if (tag && !tags.includes(tag)) {
+          tags.push(tag);
+          updateTagCloud();
+          updateTagManager();
+          trackTag(tag);
+        }
+      });
+    }
+
+    // Update the visible tag cloud
+    function updateTagCloud() {
+      const tagCloud = document.getElementById('tag-cloud');
+      tagCloud.innerHTML = ''; // Clear existing tags
+      tags.forEach(tag => {
+        const tagElement = document.createElement('span');
+        tagElement.textContent = `#${tag}`;
+        tagElement.onclick = () => showRelatedPosts(tag);
+        tagCloud.appendChild(tagElement);
+      });
+    }
+
+    // Show related posts for a tag (mockup)
+    function showRelatedPosts(tag) {
+      alert(`Showing posts related to #${tag}`);
+    }
+
+    // Manage tags in admin panel
+    function updateTagManager() {
+      const tagManager = document.getElementById('tag-manager');
+      tagManager.innerHTML = ''; // Clear existing tags
+      tags.forEach(tag => {
+        const tagElement = document.createElement('div');
+        tagElement.classList.add('tag-item');
+        tagElement.textContent = `#${tag}`;
+        tagElement.onclick = () => mergeTag(tag);
+        tagManager.appendChild(tagElement);
+      });
+    }
+
+    // Track each tag for merge functionality
+    function trackTag(tag) {
+      if (!allTags[tag]) {
+        allTags[tag] = { count: 1 };
+      } else {
+        allTags[tag].count += 1;
+      }
+    }
+
+    // Merge duplicate tags in admin panel (simple example)
+    function mergeTag(tag) {
+      const mergeWith = prompt(`Merge #${tag} with:`);
+      if (mergeWith && allTags[mergeWith.toLowerCase()]) {
+        alert(`Merged #${tag} with #${mergeWith}`);
+        delete allTags[tag];
+        tags = tags.filter(t => t !== tag);
+        updateTagCloud();
+        updateTagManager();
+      } else {
+        alert('No such tag found for merging');
+      }
+    }
+
+  </script>
+</body>
+</html>

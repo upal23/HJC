@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Draft Autosave - Blogging Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    h2 { color: #333; margin-bottom: 1rem; }
+    textarea {
+      width: 100%; padding: 10px; font-size: 16px; border-radius: 8px;
+      height: 200px; margin-bottom: 1rem; resize: none;
+    }
+
+    button {
+      padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff;
+      border: none; border-radius: 8px; cursor: pointer;
+    }
+
+    button:hover { background-color: #0056b3; }
+    .status { font-size: 14px; margin-top: 1rem; color: green; }
+    .version-history { margin-top: 2rem; text-align: left; }
+    .version-item { padding: 8px; border: 1px solid #ccc; margin-bottom: 8px; cursor: pointer; }
+    .version-item:hover { background: #f0f0f0; }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Write Your Post</h2>
+    <textarea id="draft-text" placeholder="Start typing..." oninput="autoSaveDraft()"></textarea>
+    <button onclick="restoreDraft()">Restore Last Draft</button>
+    <div class="status" id="status">Draft autosave is ON</div>
+    <div class="version-history" id="version-history"></div>
+  </div>
+
+  <script>
+    let drafts = [], currentDraft = '', lastSavedTime = Date.now();
+
+    function autoSaveDraft() {
+      const draftText = document.getElementById('draft-text').value;
+      if (draftText !== currentDraft) {
+        currentDraft = draftText;
+        const currentTime = Date.now();
+        if (currentTime - lastSavedTime >= 120000) { 
+          drafts.push({ content: draftText, time: new Date(currentTime).toLocaleString() });
+          lastSavedTime = currentTime;
+          updateVersionHistory();
+          document.getElementById('status').textContent = `Saved at ${new Date(currentTime).toLocaleString()}`;
+        }
+      }
+    }
+
+    function updateVersionHistory() {
+      const historyContainer = document.getElementById('version-history');
+      historyContainer.innerHTML = '<h3>Version History</h3>';
+      drafts.forEach((draft, index) => {
+        const versionItem = document.createElement('div');
+        versionItem.classList.add('version-item');
+        versionItem.textContent = `Version ${index + 1}: Saved on ${draft.time}`;
+        versionItem.onclick = () => restoreDraftFromHistory(index);
+        historyContainer.appendChild(versionItem);
+      });
+    }
+
+    function restoreDraftFromHistory(index) {
+      const restoredDraft = drafts[index].content;
+      document.getElementById('draft-text').value = restoredDraft;
+      currentDraft = restoredDraft;
+      document.getElementById('status').textContent = `Restored to Version ${index + 1}`;
+    }
+
+    function restoreDraft() {
+      if (drafts.length > 0) {
+        const lastVersion = drafts[drafts.length - 1].content;
+        document.getElementById('draft-text').value = lastVersion;
+        currentDraft = lastVersion;
+        document.getElementById('status').textContent = 'Restored to Last Draft';
+      } else {
+        document.getElementById('status').textContent = 'No drafts to restore.';
+      }
+    }
+
+    setInterval(autoSaveDraft, 120000);
+  </script>
+</body>
+</html>

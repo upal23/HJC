@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - Blogging Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    nav {
+      width: 220px;
+      background: #2c2c2c;
+      color: #fff;
+      padding: 1.5rem 1rem;
+    }
+    nav a {
+      display: block;
+      color: #ccc;
+      text-decoration: none;
+      margin: 10px 0;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #fff;
+    }
+    main {
+      flex: 1;
+      padding: 2rem;
+      background: #ffffff;
+      overflow-y: auto;
+      box-shadow: -1px 0 10px rgba(0,0,0,0.05);
+    }
+    .panel {
+      display: none;
+    }
+    .panel.active {
+      display: block;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: #fafafa;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #f2f2f2;
+      font-weight: bold;
+    }
+    button {
+      padding: 10px 16px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Panel - Blogging Platform</h1>
+  </header>
+  <div class="container">
+    <nav>
+      <a href="#" onclick="showPanel('users')">Users</a>
+      <a href="#" onclick="showPanel('content')">Posts</a>
+      <a href="#" onclick="showPanel('settings')">Settings</a>
+    </nav>
+    <main>
+      <section id="users" class="panel active">
+        <h2>User Management</h2>
+        <input type="text" placeholder="Search users" onkeyup="filterTable(event, 'userTable')" />
+        <table id="userTable">
+          <thead>
+            <tr><th>Name</th><th>Email</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic user rows will go here -->
+          </tbody>
+        </table>
+      </section>
+      <section id="content" class="panel">
+        <h2>Content Moderation</h2>
+        <table>
+          <thead>
+            <tr><th>Title</th><th>Status</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic post rows will go here -->
+          </tbody>
+        </table>
+      </section>
+      <section id="settings" class="panel">
+        <h2>System Settings</h2>
+        <label><input type="checkbox" checked /> Enable comments</label>
+        <label><input type="checkbox" /> Maintenance mode</label>
+        <button onclick="alert('Settings saved')">Save</button>
+      </section>
+    </main>
+  </div>
+  <script>
+    function showPanel(id) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+    function filterTable(e, tableId) {
+      const term = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+      rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

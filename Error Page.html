@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Error Page - Blogging Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+    h1 {
+      font-size: 72px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: 24px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    p {
+      font-size: 16px;
+      color: #888;
+    }
+    button {
+      background-color: #0066cc;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    .error-image {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 404 Error Page -->
+  <div class="container" id="error-404">
+    <img src="https://via.placeholder.com/300" alt="404 Error" class="error-image" />
+    <h1>404</h1>
+    <h2>Page Not Found</h2>
+    <p>Oops! The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+    <button onclick="goHome()">Go Back Home</button>
+    <button onclick="goToContact()">Contact Support</button>
+  </div>
+
+  <!-- 500 Error Page -->
+  <div class="container hidden" id="error-500">
+    <img src="https://via.placeholder.com/300" alt="500 Error" class="error-image" />
+    <h1>500</h1>
+    <h2>Internal Server Error</h2>
+    <p>Sorry! Something went wrong on our end. Please try again later or contact support if the issue persists.</p>
+    <button onclick="goHome()">Go Back Home</button>
+    <button onclick="goToContact()">Contact Support</button>
+  </div>
+
+  <script>
+    // Toggle between 404 and 500 error pages
+    function showErrorPage(errorType) {
+      document.getElementById('error-404').classList.add('hidden');
+      document.getElementById('error-500').classList.add('hidden');
+      document.getElementById(errorType).classList.remove('hidden');
+    }
+
+    // Go back to homepage
+    function goHome() {
+      window.location.href = '/';  // Replace '/' with your homepage URL
+    }
+
+    // Go to contact support page
+    function goToContact() {
+      window.location.href = '/contact';  // Replace with your contact page URL
+    }
+
+    // Example to display 404 error (could be dynamically set based on the error encountered)
+    // showErrorPage('error-404');
+  </script>
+
+</body>
+</html>
